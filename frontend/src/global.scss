@@ -1,0 +1,39 @@
+/* DrinkTracker — Global Styles */
+
+// ── Ionic variables override ───────────────────────────────────────────────────
+:root {
+  --ion-color-primary: #e8a838;
+  --ion-color-primary-rgb: 232, 168, 56;
+  --ion-color-primary-contrast: #0d0d1a;
+  --ion-color-primary-contrast-rgb: 13, 13, 26;
+  --ion-color-primary-shade: #cc9430;
+  --ion-color-primary-tint: #eab14c;
+
+  --ion-background-color: #0d0d1a;
+  --ion-text-color: #ffffff;
+  --ion-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  // Safe area
+  --ion-safe-area-top: env(safe-area-inset-top);
+  --ion-safe-area-bottom: env(safe-area-inset-bottom);
+}
+
+// ── Global resets ─────────────────────────────────────────────────────────────
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+ion-content {
+  --padding-top: 0;
+}
+
+// Smooth scroll on web
+ion-content::part(scroll) {
+  scroll-behavior: smooth;
+}
+
+// Remove default ion-item styling
+ion-item {
+  --inner-padding-end: 0;
+}

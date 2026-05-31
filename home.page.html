@@ -1,0 +1,146 @@
+<ion-header class="dt-header">
+  <ion-toolbar>
+    <ion-title class="dt-title">
+      <span class="dt-logo">🍺</span> DrinkTracker
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" fill="clear" class="logout-btn">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="dt-content" fullscreen>
+
+  <!-- Pull-to-refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      refreshingSpinner="crescent">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading skeleton -->
+  <ng-container *ngIf="loading">
+    <div class="skeleton-container">
+      <ion-skeleton-text animated style="width: 60%; height: 24px; margin: 0 auto 24px; border-radius: 8px;"></ion-skeleton-text>
+      <div class="drink-grid">
+        <ion-skeleton-text animated *ngFor="let i of [1,2,3]" style="height: 160px; border-radius: 20px;"></ion-skeleton-text>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Main content -->
+  <ng-container *ngIf="!loading">
+
+    <!-- User greeting -->
+    <div class="greeting">
+      <span class="greeting-name">¡Hola, {{ authService.currentUser?.username }}! 👋</span>
+      <span class="greeting-sub">Llevas <strong>{{ totalMyDrinks }}</strong> bebida{{ totalMyDrinks !== 1 ? 's' : '' }} esta sesión</span>
+    </div>
+
+    <!-- Segment tabs -->
+    <div class="segment-wrapper">
+      <ion-segment [(ngModel)]="activeTab" class="dt-segment">
+        <ion-segment-button value="mine">
+          <ion-icon name="person-outline"></ion-icon>
+          <ion-label>Mis bebidas</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="global">
+          <ion-icon name="people-outline"></ion-icon>
+          <ion-label>Total global</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <!-- ── MY DRINKS TAB ── -->
+    <div *ngIf="activeTab === 'mine'" class="tab-content">
+      <div class="drink-grid">
+        <div
+          *ngFor="let drink of drinks"
+          class="drink-card"
+          [style.--accent]="drink.color"
+        >
+          <!-- Emoji -->
+          <div class="drink-emoji">{{ drink.emoji }}</div>
+          <!-- Label -->
+          <div class="drink-label">{{ drink.label }}</div>
+          <!-- Counter -->
+          <div class="drink-count">{{ myDrinks[drink.type] }}</div>
+          <!-- Add button -->
+          <button class="add-btn" (click)="addOneDrink(drink.type)" [attr.aria-label]="'Añadir ' + drink.label">
+            <ion-icon name="add"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Reset button -->
+      <div class="actions">
+        <ion-button
+          fill="outline"
+          color="medium"
+          expand="block"
+          class="reset-btn"
+          (click)="confirmReset()"
+          [disabled]="totalMyDrinks === 0"
+        >
+          <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          Resetear mis contadores
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- ── GLOBAL TOTALS TAB ── -->
+    <div *ngIf="activeTab === 'global'" class="tab-content">
+      <div class="global-header">
+        <div class="global-meta">
+          <ion-icon name="people-outline"></ion-icon>
+          <span>{{ totals.totalUsuarios }} usuario{{ totals.totalUsuarios !== 1 ? 's' : '' }} bebiendo</span>
+        </div>
+        <div class="global-total-badge">
+          {{ totalAllDrinks }} bebida{{ totalAllDrinks !== 1 ? 's' : '' }} en total
+        </div>
+      </div>
+
+      <div class="drink-grid global">
+        <div
+          *ngFor="let drink of drinks"
+          class="drink-card global-card"
+          [style.--accent]="drink.color"
+        >
+          <div class="drink-emoji">{{ drink.emoji }}</div>
+          <div class="drink-label">{{ drink.label }}</div>
+          <div class="drink-count global-count">{{ totals[drink.type] }}</div>
+
+          <!-- Progress bar: share of this drink type out of total -->
+          <div class="progress-bar" *ngIf="totalAllDrinks > 0">
+            <div
+              class="progress-fill"
+              [style.width.%]="(totals[drink.type] / totalAllDrinks) * 100"
+              [style.background]="drink.color"
+            ></div>
+          </div>
+          <div class="progress-label" *ngIf="totalAllDrinks > 0">
+            {{ ((totals[drink.type] / totalAllDrinks) * 100) | number:'1.0-0' }}% del total
+          </div>
+        </div>
+      </div>
+
+      <!-- My contribution -->
+      <div class="my-contribution" *ngIf="totalMyDrinks > 0">
+        <div class="contribution-title">Tu aportación:</div>
+        <div class="contribution-row" *ngFor="let drink of drinks">
+          <ng-container *ngIf="myDrinks[drink.type] > 0">
+            <span class="c-emoji">{{ drink.emoji }}</span>
+            <span class="c-label">{{ drink.label }}</span>
+            <span class="c-count">{{ myDrinks[drink.type] }}</span>
+            <span class="c-of">de {{ totals[drink.type] }}</span>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+
+</ion-content>

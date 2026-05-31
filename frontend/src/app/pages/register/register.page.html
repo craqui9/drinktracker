@@ -1,0 +1,98 @@
+<ion-content class="register-content" fullscreen>
+  <div class="auth-container">
+    <div class="brand">
+      <div class="brand-icon">🍺</div>
+      <h1 class="brand-title">DrinkTracker</h1>
+      <p class="brand-subtitle">Únete y empieza a contar</p>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">Crear cuenta</h2>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <!-- Username -->
+        <div class="field">
+          <ion-item lines="none" class="input-item" [class.error]="form.get('username')?.invalid && form.get('username')?.touched">
+            <ion-icon name="person-outline" slot="start"></ion-icon>
+            <ion-input
+              formControlName="username"
+              type="text"
+              placeholder="Tu nombre de usuario"
+              label="Nombre de usuario"
+              labelPlacement="floating"
+              autocomplete="username"
+            ></ion-input>
+          </ion-item>
+          <span class="error-msg" *ngIf="form.get('username')?.invalid && form.get('username')?.touched">
+            Mínimo 3 caracteres, máximo 20
+          </span>
+        </div>
+
+        <!-- Email -->
+        <div class="field">
+          <ion-item lines="none" class="input-item" [class.error]="form.get('email')?.invalid && form.get('email')?.touched">
+            <ion-icon name="mail-outline" slot="start"></ion-icon>
+            <ion-input
+              formControlName="email"
+              type="email"
+              placeholder="tu@email.com"
+              label="Email"
+              labelPlacement="floating"
+              autocomplete="email"
+            ></ion-input>
+          </ion-item>
+          <span class="error-msg" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+            Introduce un email válido
+          </span>
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+          <ion-item lines="none" class="input-item" [class.error]="form.get('password')?.invalid && form.get('password')?.touched">
+            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+            <ion-input
+              formControlName="password"
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="Contraseña"
+              label="Contraseña"
+              labelPlacement="floating"
+              autocomplete="new-password"
+            ></ion-input>
+            <ion-button slot="end" fill="clear" (click)="togglePassword()">
+              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <span class="error-msg" *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+            Mínimo 6 caracteres
+          </span>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="field">
+          <ion-item lines="none" class="input-item" [class.error]="form.get('confirmPassword')?.touched && form.hasError('passwordsMismatch')">
+            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+            <ion-input
+              formControlName="confirmPassword"
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="Repite la contraseña"
+              label="Confirmar contraseña"
+              labelPlacement="floating"
+              autocomplete="new-password"
+            ></ion-input>
+          </ion-item>
+          <span class="error-msg" *ngIf="form.get('confirmPassword')?.touched && form.hasError('passwordsMismatch')">
+            Las contraseñas no coinciden
+          </span>
+        </div>
+
+        <ion-button expand="block" type="submit" class="submit-btn" [disabled]="form.invalid">
+          Registrarme
+        </ion-button>
+      </form>
+    </div>
+
+    <p class="footer-link">
+      ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+    </p>
+  </div>
+</ion-content>
